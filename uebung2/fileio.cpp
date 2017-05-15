@@ -3,6 +3,7 @@
 #include <string>
 #include <sstream>
 #include <regex>
+#include <vector>
 
 
 bool isValueCorrect(const std::string &teststring, const int &column)
@@ -15,6 +16,9 @@ bool isValueCorrect(const std::string &teststring, const int &column)
 		/*case 1:
 			regExp = "[a-zA-Z]+";
 			break;*/
+	case 5:
+		regExp = "|{3,4}[a-zA-Z0-9äöüÄÖÜß]";
+		break;
 
 		// Todo: implement cases for other columns
 
@@ -34,7 +38,18 @@ void readTokensAndLines(char* path)
 	while (std::getline(file, line)) {
 		std::istringstream linestream;
 		linestream.str(line);
+		std::string field;
 
+		std::vector<std::string> savedLine;
+		//with ',' as delim		
+		while (std::getline(linestream, field, ',')) {
+			savedLine.push_back(field);
+		}
+		if (savedLine.size() < 12) //Adding "nothing" for missing timezones
+			savedLine.push_back("");
+		std::cout << savedLine.at(1) << " - " << savedLine.at(11) <<std::endl;
+
+		savedLine.clear();
 		// Todo: - Split line and write result to std::cout
 		//       - Check each part of line with isValueCorrect and log if values are not supported
 		//       - Use and extend isValueCorrect function for this
