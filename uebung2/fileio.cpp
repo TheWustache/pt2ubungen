@@ -39,11 +39,12 @@ void readTokensAndLines(char* path)
 {
 	std::ifstream file(path);
 	std::string parsed, line;
+
 	std::ofstream errorLog;
+
 	while (std::getline(file, line)) {
 		std::istringstream linestream;
-		linestream.str(line);
-		
+		linestream.str(line);		
 		std::vector<std::string> savedLine;
 		
 		while (std::getline(linestream, parsed, ',')) {
