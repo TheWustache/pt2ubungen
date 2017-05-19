@@ -1,0 +1,7 @@
+Vorname:  ([A-ZÖÄÜ][a-zßöüä]+)(-[A-ZÖÄÜ][a-zßöüä]+){0,2} //gilt nur für doppelnamen(nicht mehr)
+Nachname: ([A-ZÖÄÜ]?[a-zßöüä]+)([- ][A-ZÖÄÜ]?[a-zßöüä]+)* //Adelstitel & Doppelte Nachnahmen
+Straße: ([A-ZÖÄÜ][a-zßöüä]+)([. -][A-ZÖÄÜ][a-zßöüä]+){0,4} //0-4 da mir kein Beispiel eingefallen war das das widerspricht
+Nr. :  ([A-ZÖÄÜ][a-zßöüä]+[.]?)([ -][A-ZÖÄÜ][a-zßöüä]+[.]?){0,4} //Können mit . enden
+PLZ: [0-9]{5}
+Ort: ([A-ZÖÄÜ][a-zßöüä]+)(([- ][A-ZÖÄÜ][a-zßöüä]+)|( [(][A-ZÖÄÜ][a-zßöüä]+[)]))?
+		Name, Name-Name, oder Name (Name)
