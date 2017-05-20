@@ -1,0 +1,34 @@
+a) Ein LOOP-Programm besteht aus einer endlichen Aneinanderreihung von Anweisungen. Wertzuweisungen sind offensichtlich in endlicher Zeit ausführbar. LOOP-Anweisungen überprüfen die übergebene Variable und wiederholen das jeweilige Teilprogramm entsprechend oft. Da Variablen nur endliche Werte haben können, kann das Teilprogramm auch nur endlich oft wiederholt werden, es muss also in endlicher Zeit ausführbar sein. Da also alle Anweisungen eines LOOP-Programmes in endlicher Zeit ausführbar sind, muss jedes LOOP-Programm in endlicher Zeit terminieren.
+
+
+b) P ::= x0 := 1; WHILE x0 =|= 0 DO END
+
+
+c) Sei p eine natürliche Zahl.
+
+LOOP:
+
+P ::= x0 := p; LOOP x0 DO Q END
+
+WHILE:
+
+P ::= x0 := p; WHILE x0 =|= 0 DO Q; x0 := x0 - 1 END
+
+
+di) P ::= x0 := x; x1 := y; WHILE x1 =|= 0 DO x0 := x0 + 1; x1 := x1 - 1 END
+	Ergebnis: x0
+
+ii) P ::= x0 := 0; x1 := y; WHILE x1 =|= 0 DO x0 := x0 + x; x1 := x1 - 1 END
+	Ergebnis: x0
+
+iii) P ::= 	x0 := x;
+		x1 := y;
+		WHILE x1 =|= 0 DO
+			x2 := x - 1;
+			x3 := x0;
+			WHILE x2 =|= 0 DO
+				x0 := x0 + x3;
+				x2 := x2 - 1 END;
+			x1 := x1 - 1 END
+	Ergebnis: x0
+	// könnte falsch sein
