@@ -1,0 +1,61 @@
+\documentclass{article}
+\usepackage[utf8]{inputenc}
+\usepackage{ngerman}
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage[margin=1.2in]{geometry}
+\date{}
+
+\begin{document}
+
+\section*{Aufgabe 2.3}
+
+\bf{Vorname: }\normalfont $([A-Z"A"O"U][a-z"a"ouUß]+)(-[A-Z][a-z"a"o"uß]+)\lbrace0,2\rbrace$\\
+\\
+G"ultig: Deutscher Großbuchstabe gefolgt von mindestens einem Kleinbuchstaben, 1-3 W"orter durch Bindestrich getrennt.\\
+\\
+Beispiel: G"unther-Heinz\\
+Gegenbeispiel: P3ter\\
+\\
+\\
+\bf{Nachname: }\normalfont $([A-Z"A"O"U]?[a-z"a"o"uß]+)([- ][A-Z"A"O"U]?[a-z"a"o"uß]+)*$\\
+\\
+G"ultig: Deutscher Großbuchstabe gefolgt von mindestens einem Kleinbuchstaben, Doppelnachnahmen mit Bindestrich oder Leerzeichen und Sätze (Adelstitel).\\
+\\
+Beispiel: von der Leyen\\
+Gegenbeispiel: SCHMIDT\\
+\\
+\\
+\bf{Straße: }\normalfont $([A-Z"A"O"U][a-zz"a"o"uß]+\backslash.?)([ -][A-Z"A"O"U][a-z"a"o"uß]+[.]?)\lbrace0,4\rbrace$\\
+\\
+G"ultig: F"angt groß an, mindestens 1 Kleinbuchstabe, kann mit Punkt enden, danach optional das Gleiche, durch - oder Leerzeichen getrennt, maximal 5 W"orter, mindestens 1 insgesammt.\\
+\\
+Beispiel: Prof.-Dr. Straße\\
+Gegenbeispiel: 54th Street\\
+\\
+\\
+\bf{Nr.: }\normalfont $\backslash d\lbrace1,3\rbrace(([a-z]|-\backslash d\lbrace1,3\rbrace))?$\\
+\\
+G"ultig: Mindestens 1 Ziffer, maximal 3, optional von 1 Buchstaben oder einer dreistelligen Zahl mit - getrennt.\\
+\\
+Beispiel: 123a\\
+Gegenbeispiel: 6666.666\\
+\\
+\\
+\bf{PLZ: }\normalfont $\backslash d\lbrace5\rbrace$\\
+\\
+G"ultig: 5 Ziffern.\\
+\\
+Beispiel: 12345\\
+Gegenbeispiel: 123456
+\newpage
+\noindent
+\bf{Ort: }\normalfont $([A-Z"A"O"U][a-z"a"o"uß]+)(([- ][A-Z"A"O"U][a-z"a"o"uß]+)|( [(][A-Z"A"O"U][a-z"a"o"uß]+[)]))?$\\
+\\
+G"ultig: Großbuchstabe gefolgt von mindestens 1 Kleinbuchstaben, optional gefolgt von dem Gleichen getrennt durch Leerzeichen oder -, oder dem Gleichen getrennt durch Leerzeichen und eingeklammert.\\
+\\
+Beispiel: Bad Bodenteich\\
+Gegenbeispiel: Berlin/Brandenburg\\
+\\
+\\
+\end{document}

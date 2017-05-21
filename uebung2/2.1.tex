@@ -1,0 +1,108 @@
+\documentclass{article}
+\usepackage[utf8]{inputenc}
+\usepackage{ngerman}
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage[margin=1.2in]{geometry}
+\date{}
+
+\begin{document}
+
+\section*{Aufgabe 2.1}
+
+\bf{a)}\normalfont\\
+\\
+Ein LOOP-Programm besteht aus einer endlichen Aneinanderreihung von Anweisungen.
+Wertzuweisungen sind offensichtlich in endlicher Zeit ausführbar. LOOP-Anweisungen überprüfen die übergebene Variable und wiederholen das jeweilige Teilprogramm entsprechend oft.
+Da Variablen nur endliche Werte haben können, kann das Teilprogramm auf diese Weise auch nur endlich oft wiederholt werden, es muss also in endlicher Zeit ausführbar sein.
+Da also alle Anweisungen eines LOOP-Programmes in endlicher Zeit ausführbar sind, muss jedes LOOP-Programm in endlicher Zeit terminieren.\\
+\\
+\\
+\bf{b)}\normalfont\\
+\\
+$
+P ::=\\
+\indent x_0 := 1;\\
+\indent \text{WHILE } x_0 \neq 0 \text{ DO } x_0 := x_0 + 1 \text{ END}
+$\\
+\\
+\\
+\bf{c)}\normalfont\\
+\\
+Sei $p$ eine nat"urliche Zahl.\\
+\\
+LOOP:\\
+$
+P ::=\\
+\indent x_0 := p;\\
+\indent \text{LOOP } x_0 \text{ DO } Q \text{ END}
+$\\
+\\
+WHILE:\\
+$
+P ::=\\
+\indent x_0 := p;\\
+\indent \text{WHILE } x_0 \neq 0 \text{ DO } Q; x_0 := x_0 - 1 \text{ END}
+$\\
+\\
+\\
+\bf{di)}\normalfont\\
+\\
+$
+P ::=\\
+\indent result := y+0;\\
+\indent x_1 := x+0;\\
+\indent \text{WHILE } x_1 \neq 0 \text{ DO }\\
+\indent\indent x_1 := x_1 - 1;\\
+\indent\indent result := result + 1;\\
+\indent\text{END}
+$\\
+\\
+Ergebnis: $result$
+\newpage
+\noindent
+\bf{dii)}\normalfont\\
+\\
+$
+P ::=\\
+\indent result := 0;\\
+\indent x_{Mult} := x+0;\\
+\indent \text{WHILE } x_{Mult} \neq 0 \text{ DO }\\
+\indent\indent y_{Add} := y + 0;\\
+\indent\indent x_{Mult} := x_{Mult}-1;\\
+\indent\indent \text{WHILE } y_{Add} \neq 0 \text{ DO }\\
+\indent\indent\indent y_{Add} := y_{Add} -1;\\
+\indent\indent\indent result := result + 1;\\
+\indent\indent\text{END}\\
+\indent\text{END}
+$\\
+\\
+Ergebnis: $result$\\
+\\
+\\
+\bf{diii)}\normalfont\\
+\\
+$
+P ::=\\
+\indent result := 0;\\
+\indent \text{WHILE } x \neq 0 \text{ DO }\\
+\indent\indent result := 1;\\
+\indent\indent y_{Pot} := y + 0;\\
+\indent\indent \text{WHILE } y_{Pot} \neq 0 \text{ DO }\\
+\indent\indent\indent y_{Pot} :=  y_{Pot} - 1;\\
+\indent\indent\indent x_{Mult} := x - 1;\\
+\indent\indent\indent tempRes := result;\\
+\indent\indent\indent \text{WHILE } x_{Mult} \neq 0 \text{ DO }\\
+\indent\indent\indent\indent x_{Mult} := x_{Mult} - 1;\\
+\indent\indent\indent\indent resAdd := tempRes + 0;\\
+\indent\indent\indent\indent \text{WHILE } x_{Mult} \neq 0 \text{ DO }\\
+\indent\indent\indent\indent\indent resAdd := resAdd - 1;\\
+\indent\indent\indent\indent\indent result := result + 1;\\
+\indent\indent\indent\indent\text{END}\\
+\indent\indent\indent\text{END}\\
+\indent\indent\text{END}\\
+\indent\text{END}
+$\\
+\\
+Ergebnis: $result$
+\end{document}
