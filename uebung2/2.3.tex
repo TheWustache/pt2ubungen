@@ -18,7 +18,7 @@ Beispiel: G"unther-Heinz\\
 Gegenbeispiel: P3ter\\
 \\
 \\
-\bf{Nachname: }\normalfont $([A-Z"A"O"U]?[a-z"a"o"uß]+)([- ][A-Z"A"O"U]?[a-z"a"o"uß]+)*$\\
+\bf{Nachname: }\normalfont $([A-Z"A"O"U]?[a-z"a"o"uß]+)([-\text{ }][A-Z"A"O"U]?[a-z"a"o"uß]+)*$\\
 \\
 G"ultig: Deutscher Großbuchstabe gefolgt von mindestens einem Kleinbuchstaben, Doppelnachnahmen mit Bindestrich oder Leerzeichen und Sätze (Adelstitel).\\
 \\
@@ -26,7 +26,7 @@ Beispiel: von der Leyen\\
 Gegenbeispiel: SCHMIDT\\
 \\
 \\
-\bf{Straße: }\normalfont $([A-Z"A"O"U][a-zz"a"o"uß]+\backslash.?)([ -][A-Z"A"O"U][a-z"a"o"uß]+[.]?)\lbrace0,4\rbrace$\\
+\bf{Straße: }\normalfont $([A-Z"A"O"U][a-zz"a"o"uß]+\backslash.?)([\text{ }-][A-Z"A"O"U][a-z"a"o"uß]+[.]?)\lbrace0,4\rbrace$\\
 \\
 G"ultig: F"angt groß an, mindestens 1 Kleinbuchstabe, kann mit Punkt enden, danach optional das Gleiche, durch - oder Leerzeichen getrennt, maximal 5 W"orter, mindestens 1 insgesammt.\\
 \\
@@ -50,7 +50,7 @@ Beispiel: 12345\\
 Gegenbeispiel: 123456
 \newpage
 \noindent
-\bf{Ort: }\normalfont $([A-Z"A"O"U][a-z"a"o"uß]+)(([- ][A-Z"A"O"U][a-z"a"o"uß]+)|( [(][A-Z"A"O"U][a-z"a"o"uß]+[)]))?$\\
+\bf{Ort: }\normalfont $([A-Z"A"O"U][a-z"a"o"uß]+)(([-\text{ }][A-Z"A"O"U][a-z"a"o"uß]+)|( [(][A-Z"A"O"U][a-z"a"o"uß]+[)]))?$\\
 \\
 G"ultig: Großbuchstabe gefolgt von mindestens 1 Kleinbuchstaben, optional gefolgt von dem Gleichen getrennt durch Leerzeichen oder -, oder dem Gleichen getrennt durch Leerzeichen und eingeklammert.\\
 \\
