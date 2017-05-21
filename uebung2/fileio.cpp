@@ -45,15 +45,32 @@ void readTokensAndLines(char* path)
 	while (std::getline(file, line)) {
 		std::istringstream linestream;
 		linestream.str(line);		
-		std::vector<std::string> savedLine;
+		std::vector<std::string> savedLine;	
 		
-		while (std::getline(linestream, parsed, ',')) {
-			
-			
+		//parse line
+		char c = '0';
+		//end at end of line
+		for (int i = 0; i < line.size();) {
+			bool stringFlag = false;
+			c = '\0';
+			parsed = "";
+			//1 word, end if linesize is reached or new ,
+			while((stringFlag || c != ',' )&& i!=line.size()){// old code  :while (std::getline(linestream, parsed, ',')) {
+				linestream.get(c);
+				i++;
+				if (c == '\"') {
+					stringFlag = !stringFlag;
+					continue;
+				}
+				if (!stringFlag && c == ',')
+					break;
+				//add char to string
+				parsed+=c;				
+			}
+			//save string
 			savedLine.push_back(parsed);
-			
 		}
-		//Adding "nothing" for missing timezones since its the end of the line
+		//Adding "nothing" for missing timezones since its the end of the line, otherwise out of bounds exception
 		if (savedLine.size() < 12) 
 			savedLine.push_back("");
 		std::cout << savedLine.at(1) << " - " << savedLine.at(11) <<std::endl;

@@ -96,15 +96,24 @@ WHILE xMult != 0 DO
 END
 Ergebnis: result
 
-iii) P ::= 	x0 := x;
-		x1 := y;
-		WHILE x1 =|= 0 DO
-			x2 := x - 1;
-			x3 := x0;
-			WHILE x2 =|= 0 DO
-				x0 := x0 + x3;
-				x2 := x2 - 1 END;
-			x1 := x1 - 1 END
-	Ergebnis: x0
-	// könnte falsch sein
->>>>>>> 243d50f1da78d11c4d2956851ca76a38676ff5f0
+iii) 
+P ::= 
+result := 0;
+WHILE x!= 0 DO
+	result := 1;
+	yPot := y + 0;
+	WHILE yPot !=0 DO 
+		yPot := yPot -1;
+		xMult := x - 1;
+		tempRes := result;
+			WHILE xMult != 0 DO
+			xMult := xMult -1;
+			resAdd := tempRes + 0;
+			WHILE resAdd != 0 DO
+				resAdd := resAdd -1;
+				result := result +1;
+			END
+		END
+	END
+END
+Ergebnis: result
