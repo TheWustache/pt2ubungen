@@ -1,0 +1,52 @@
+2.1a
+Variablen haben eine endliche Länge. Daher kan ein loop-Befehl durch aneinanderreihen von endlich vielen Ps
+dargestellt werden. Da die restlichen Befehle auch endliche Länge besitzen kann somit das gesammte Programm mit endlich vielen Befehlen die jeweils endlich viel Zeit benötigen ausgefüht werden. 
+D.h. es terminiert in endlicher Zeit
+
+2.1b
+
+x:=1
+WHILE x != 0 DO y:=1 END
+
+2.1c
+LOOP x1 DO P END 
+
+x2:= x1 + 0
+WHILE x2 !=0 DO P; x2:x2-1 END
+
+2.1d
+(i)
+result:=y+0; x1:=x+0;
+WHILE x1 != 0 DO
+	x1:=x1-1;
+	result:=result+1;
+END
+
+(ii)
+xMult := x + 0;
+result := 0;
+WHILE xMult != 0 DO
+	yAdd := y + 0;
+	xMult := xMult - 1;
+	WHILE yAdd != 0 DO
+		yAdd:=yAdd-1;
+		result:=result+1;
+	END
+END
+
+(iii)
+result := 1;
+yPot := y + 0;
+WHILE yPot !=0 DO 
+	yPot := yPot -1;
+	xMult := x - 1;
+	tempRes := result;
+	WHILE xMult != 0 DO
+		xMult := xMult -1;
+		resAdd := tempRes + 0;
+		WHILE resAdd != 0 DO
+			resAdd := resAdd -1;
+			result := result +1;
+		END
+	END
+END
