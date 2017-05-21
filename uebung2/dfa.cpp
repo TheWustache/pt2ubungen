@@ -167,7 +167,6 @@ std::string stepExtended(std::string state, int value)
 			return state;
 		}
 	}
-
 	// for all states and inputs which are not handled above show a message and return original state
 	std::cout << "Invalid input.\n";
 	return state;
