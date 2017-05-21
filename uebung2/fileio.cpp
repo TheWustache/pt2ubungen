@@ -10,23 +10,22 @@ bool isValueCorrect(const std::string &teststring, const int &column)
 {
 	std::regex regExp;
 
-	switch (column)
+	switch (column)//column starting at 0
 	{
 		// example regExp for column 1
 		/*case 1:
 			regExp = "[a-zA-Z]+";
 			break;*/
 	case 5:	//empty string or 3-4 Letter code
-		regExp = "([]*)|([a-zA-Z0-9äöüÄÖÜß]{3,4})";
+		regExp = "(^$)|([a-zA-Z0-9äöüÄÖÜß]{3,4})";
 		break;
-	case 8: // 0 - 29999
-		regExp = "[0-2]?[0-9]{1,4}";
+	case 8: // 0 - 29999, mit führenden 0
+		regExp = "[0]*[1-2]?[0-9]{1,4}";
 		break;
 	case 10: //
 		regExp = "[EASOZNU]{1}";
 		break;
 		// Todo: implement cases for other columns
-
 		default:
 			regExp = ".*";
 			break;
@@ -43,20 +42,20 @@ void readTokensAndLines(char* path)
 	std::ofstream errorLog;
 
 	while (std::getline(file, line)) {
-		std::istringstream linestream;
-		linestream.str(line);		
-		std::vector<std::string> savedLine;	
-		
-		//parse line
+
+		std::vector<std::string> savedLine;			
 		char c = '0';
+		bool isError = false;
+		int errorCode = -1;
 		//end at end of line
-		for (int i = 0; i < line.size();) {
+
+		for (int i = 0; i < line.size();) {			
 			bool stringFlag = false;
 			c = '\0';
 			parsed = "";
 			//1 word, end if linesize is reached or new ,
 			while((stringFlag || c != ',' )&& i!=line.size()){// old code  :while (std::getline(linestream, parsed, ',')) {
-				linestream.get(c);
+				c = line[i];
 				i++;
 				if (c == '\"') {
 					stringFlag = !stringFlag;
@@ -69,6 +68,18 @@ void readTokensAndLines(char* path)
 			}
 			//save string
 			savedLine.push_back(parsed);
+			//errorhandling, once per line if error is found
+			if (!isError) {				
+				errorCode = (int) savedLine.size() - 1;
+				//check if error happened
+				isError = !isValueCorrect(savedLine.at(errorCode), errorCode);
+				if(isError){
+					if (!errorLog.is_open()) {
+						errorLog.open("fileio.log");
+					}
+					errorLog << line << "  -  Error at Field:" << errorCode << std::endl;
+				}
+			}
 		}
 		//Adding "nothing" for missing timezones since its the end of the line, otherwise out of bounds exception
 		if (savedLine.size() < 12) 
@@ -76,22 +87,9 @@ void readTokensAndLines(char* path)
 		std::cout << savedLine.at(1) << " - " << savedLine.at(11) <<std::endl;
 
 		//write Error, Works but other stuff didnt
-
-		/*if (isError) {
-			if (!errorLog.is_open()) {
-				errorLog.open("fileio.log");
-			}
-			errorLog << line << "  -  Error at Field:" << errorCode << std::endl;
-		}*/
-
 		savedLine.clear();
-		// Todo: - Split line and write result to std::cout
-		//       - Check each part of line with isValueCorrect and log if values are not supported
-		//       - Use and extend isValueCorrect function for this
-
-
 	}
-		if (errorLog.is_open())errorLog.close();
+	if (errorLog.is_open())errorLog.close();
 }
 
 int main(int argc, char * argv[])
