@@ -23,7 +23,7 @@ bool isValueCorrect(const std::string &teststring, const int &column)
 		regExp = "[0]*[1-2]?[0-9]{1,4}";
 		break;
 	case 10: //
-		regExp = "[EASOZNU]{1}";
+		regExp = "[EASOZNU]";
 		break;
 		// Todo: implement cases for other columns
 		default:
