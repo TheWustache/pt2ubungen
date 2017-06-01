@@ -173,21 +173,57 @@ void importRoutesData(char* path, std::map<int, AirportInfo>& airportInfo)
 }
 
 // TODO 3.2a - remove all routes from AirportInfo::m_routes with at least one stop (so that only direct flights remain). Use std::remove_if().
-void removeNonDirectFlights(std::map<int, AirportInfo>& airportInfo)
+void removeNonDirectFlights(std::map<int, AirportInfo> & airportInfo)
 {
 	std::cout << "Remove non-direct flights (i.e., at least one stop)" << std::endl;
+	//for all airports
+	//for(auto pair : airportInfo){
+	std::for_each(airportInfo.begin(), airportInfo.end(),[](std::pair<int, AirportInfo> pair){		
+		//remove all flights with stops
+		std::remove_if(pair.second.m_routes.begin(), pair.second.m_routes.end(), 
+			[](std::pair<int,int> x)->bool {
+			return x.second != 0;
+		});
+	});	
+	//}
 }
 
 // TODO 3.2b - For each route in AirportInfo::m_routes, calculate the distance between start and destination. Store the results in AirportInfo::m_routeLengths. Use std::transform() and calculateDistanceBetween().
 void calculateDistancePerRoute(std::map<int, AirportInfo>& airportInfo)
 {
 	std::cout << "Calculate distance for each route" << std::endl;
+	//for all airports
+	std::for_each(airportInfo.begin(), airportInfo.end(), [&airportInfo](std::pair<int, AirportInfo> pair) {
+		auto airport = pair.second;
+		//initialize m_routeLength
+		for (int i = 0; i < airport.m_routes.size(); i++) {
+			airport.m_routeLengths.push_back(0);
+		}
+		//and calculate distance between this & destAirport & save it in m_routeLength, works 
+		std::transform(airport.m_routes.begin(), airport.m_routes.end(), airport.m_routeLengths.begin(),
+			[&airport, &airportInfo](std::pair<int, int> routePair) {			
+			auto destAirport = airportInfo.at(routePair.first);
+			return calculateDistanceBetween(airport.pos[0], airport.pos[1], destAirport.pos[0], destAirport.pos[1]);
+		});
+		pair.second = airport;
+		
+	});
+	std::cout << airportInfo.at(5).m_routeLengths.size();
+	
 }
 
 // TODO 3.2c - Based on AirportInfo::m_routeLengths, calculate for each airport the average distance of outgoing routes. Store the results in AirportInfo::m_averageRouteLength. Use std::accumulate().
 void calculateAverageRouteDistances(std::map<int, AirportInfo>& airportInfo)
 {
 	std::cout << "Calculate average distance for each source airport" << std::endl;
+	//for all airports
+	std::for_each(airportInfo.begin(), airportInfo.end(), [&airportInfo](std::pair<int, AirportInfo> pair) {
+		auto airport = &pair.second;
+		airport->m_averageRouteLength = std::accumulate(airport->m_routeLengths.begin(), airport->m_routeLengths.end(),0.0f);
+		//std::cout << airport->m_averageRouteLength << std::endl;
+	});
+	
+	
 }
 
 void printResults(std::map<int, AirportInfo>& airportInfo)
@@ -216,6 +252,14 @@ int main(int argc, char * argv[])
 	importRoutesData(argv[2], airportInfo);
 
 	removeNonDirectFlights(airportInfo);
+	//testing
+	std::for_each(airportInfo.begin(), airportInfo.end(), [](std::pair<int, AirportInfo> pair) {
+		//remove all flights with stops
+		std::for_each(pair.second.m_routes.begin(), pair.second.m_routes.end(),
+			[](std::pair<int, int> x) {
+			if (x.second != 0)std::cout << "wops" ;
+		});
+	});
 	calculateDistancePerRoute(airportInfo);
 	calculateAverageRouteDistances(airportInfo);
 	printResults(airportInfo);
