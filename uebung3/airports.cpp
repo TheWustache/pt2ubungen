@@ -177,15 +177,13 @@ void removeNonDirectFlights(std::map<int, AirportInfo> & airportInfo)
 {
 	std::cout << "Remove non-direct flights (i.e., at least one stop)" << std::endl;
 	//for all airports
-	std::for_each(airportInfo.begin(), airportInfo.end(),[](std::pair<int, AirportInfo> pair){			
+	std::for_each(airportInfo.begin(), airportInfo.end(),[](auto & pair){
 		//remove all flights with stops
 		std::remove_if(pair.second.m_routes.begin(), pair.second.m_routes.end(),
 			[](std::pair<int,int> x){
 			return x.second != 0;
 		});
-		//HELPcompletle changed here
 	});
-	//HELPno change here
 }
 
 // TODO 3.2b - For each route in AirportInfo::m_routes, calculate the distance between start and destination. Store the results in AirportInfo::m_routeLengths. Use std::transform() and calculateDistanceBetween().
@@ -193,7 +191,7 @@ void calculateDistancePerRoute(std::map<int, AirportInfo>& airportInfo)
 {
 	std::cout << "Calculate distance for each route" << std::endl;
 	//for all airports
-	std::for_each(airportInfo.begin(), airportInfo.end(), [&airportInfo](std::pair<int, AirportInfo> pair) {
+	std::for_each(airportInfo.begin(), airportInfo.end(), [&airportInfo](auto & pair) {
 		auto airport = pair.second;
 		//initialize m_routeLength
 		for (int i = 0; i < airport.m_routes.size(); i++) {
@@ -215,10 +213,9 @@ void calculateAverageRouteDistances(std::map<int, AirportInfo>& airportInfo)
 {
 	std::cout << "Calculate average distance for each source airport" << std::endl;
 	//for all airports
-	std::for_each(airportInfo.begin(), airportInfo.end(), [&airportInfo](std::pair<int, AirportInfo> pair) {
+	std::for_each(airportInfo.begin(), airportInfo.end(), [&airportInfo](auto & pair) {
 		auto airport = &pair.second;
 		airport->m_averageRouteLength = std::accumulate(airport->m_routeLengths.begin(), airport->m_routeLengths.end(),0.0f);
-		//std::cout << airport->m_averageRouteLength << std::endl;
 	});
 	
 	
@@ -248,18 +245,6 @@ int main(int argc, char * argv[])
 
 	importAirportData(argv[1], airportInfo);
 	importRoutesData(argv[2], airportInfo);
-
-	removeNonDirectFlights(airportInfo);
-	//testing
-	std::for_each(airportInfo.begin(), airportInfo.end(), [](std::pair<int, AirportInfo> pair) {
-		//remove all flights with stops
-		std::for_each(pair.second.m_routes.begin(), pair.second.m_routes.end(),
-			[](std::pair<int, int> x) {
-			if (x.second != 0)std::cout << "wops";
-		});
-	});
-	std::cout << std::endl;	
-	
 	calculateDistancePerRoute(airportInfo);
 	calculateAverageRouteDistances(airportInfo);
 	printResults(airportInfo);
