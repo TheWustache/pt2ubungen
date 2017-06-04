@@ -94,12 +94,24 @@ bool validTour(const vector<int>& tour) {
 
 // TODO 3.3a: returns distance between two cities based on the distance table
 int cityDistance(int city1, int city2) {
-	return 0;
+    // assert cities are valid
+    assert(city1 >= 0 && city1 < N && city2 >= 0 && city2 < N);
+    
+	return distance_table[city1][city2];
 }
 
 // TODO 3.3b: calculate the length for a given tour, assuming a round trip
 int tourLength(const vector<int>& T) {
-	return 0;
+    // assert tour is valid
+    assert(validTour(T));
+    
+    // calculate sum of distances
+    int length = cityDistance(T[19],T[0]);
+    for(int i=0; i < N-1; i++) {
+        length += cityDistance(T[i],T[i+1]);
+    }
+    
+    return length;
 }
 
 //  print city names of a tour
@@ -120,7 +132,15 @@ void printTourSet(const vector<vector<int>>& TourSet) {
 
 // TODO 3.3c: inserts a city in an incomplete tour, using the next free slot
 void insertCity(vector<int>& tour, int city) {
-
+    assert(tour.size() == N);
+    assert(city >= 0 && city < N);
+    
+    // insert city
+    int i = 0;
+    while(tour[i] != -1) {
+        i++;
+    }
+    tour[i] = city;
 }
 
 
@@ -140,7 +160,24 @@ void generateTours(vector< vector<int> >& tourSet) {
 
 // TODO 3.3d: take two (good) parent tours, and build a new one by the gens of both. Hint: Use rand, findCity and insertCity.
 void crossover(const vector<int>& parent1, const vector<int>& parent2, vector<int>& child) {
-	// ...
+    // insert half of parent1 somewhere into child
+    int startIdx = rand() % (N/2);
+    
+    for(int i=0; i<N/2; i++) {
+        child[i+startIdx] = parent1[i+startIdx];
+    }
+    
+    // fill the rest with parent2
+    int insertIdx = 0;
+    
+    for(int i=0; i<N; i++) {
+        if(child[i] == -1) {
+            while(findCity(child, parent2[insertIdx])) {
+                insertIdx++;
+            }
+            child[i] = parent2[insertIdx];
+        }
+    }
 
 	assert(tourDefined(child)); // check for undefined city indices
 	assert(validTour(child)); // check that each city is defined only once
@@ -150,6 +187,15 @@ void crossover(const vector<int>& parent1, const vector<int>& parent2, vector<in
 void mutate(vector<int>& tour) {
 	const float mutationProbability = 0.02f; // x% probability per city in a tour to get mutated
 
+    for(int i=0; i<N; i++) {
+        if(frand(0, 100) <= mutationProbability) {
+            int swapIdx = rand() % (N-1);
+            if(swapIdx == i) {
+                swapIdx++;
+            }
+            std::swap(tour[i], tour[swapIdx]);
+        }
+    }
 }
 
 // fitness function based on tour length: the shorter, the better
@@ -180,12 +226,14 @@ pair<int,int> evolution(vector<vector<int>>& tourSet) {
 	// compute and store crossover tour
 	const vector<int>& T1 = tourSet[F[0].second]; // take first best tour
 	const vector<int>& T2 = tourSet[F[1].second]; // take second best tour
-	vector<int> T12 {N, -1};
+	vector<int> T12(N, -1);
 	crossover(T1, T2, T12); // two parent, one new child
 	tourSet[F[M-1].second] = T12; // overwrite worst tour by newly generated crossover
 
 	// TODO 3.3e: Mutate all other tours (ignore two best trips and the former worst trip (replaced)). Use the mutate method.
-
+    for(int i=2; i<M-1; i++) {
+        mutate(tourSet[i]);
+    }
 
 
 

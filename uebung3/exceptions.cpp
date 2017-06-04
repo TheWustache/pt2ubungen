@@ -66,22 +66,16 @@ void parseLine(std::string line, int lineNum)
             std::stof(fields[1]);
         }
         catch (std::logic_error &x) {
-            if(e.m_actFields != "") {
-                e.m_actFields += ", ";
-            }
-            e.m_actFields += fieldNames[1];
+            e.m_actFields += (e.m_actFields == "" ? "" : ", ") + fieldNames[1];
             error = true;
         }
         
-        // Temperature
+        // Rainfall
         try {
             std::stof(fields[2]);
         }
         catch (std::logic_error &x) {
-            if(e.m_actFields != "") {
-                e.m_actFields += ", ";
-            }
-            e.m_actFields += fieldNames[2];
+            e.m_actFields += (e.m_actFields == "" ? "" : ", ") + fieldNames[2];
             error = true;
         }
         
