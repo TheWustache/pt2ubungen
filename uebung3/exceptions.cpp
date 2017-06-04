@@ -99,14 +99,14 @@ void writeOutFormatException(const FormatException& e)
     
     try {
         if(!initialized) {
-            log.open("../log.txt", std::ios::trunc);
+            log.open("log.txt", std::ios::trunc);
             initialized = true;
         }
         else {
-            log.open("../log.txt", std::ios::app);
+            log.open("log.txt", std::ios::app);
         }
         
-        log.exceptions(std::ios::failbit);
+        log.exceptions(std::ios::failbit | std::ios::badbit);
         
         log << e.m_actLine << ": " << e.m_actFields << std::endl;
         
