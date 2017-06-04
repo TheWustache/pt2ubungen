@@ -197,7 +197,7 @@ void calculateDistancePerRoute(std::map<int, AirportInfo>& airportInfo)
 		for (int i = 0; i < airport.m_routes.size(); i++) {
 			airport.m_routeLengths.push_back(0);
 		}
-		//and calculate distance between this & destAirport & save it in m_routeLength, works 
+		//and calculate distance between this & destAirport & save it in m_routeLength, 
 		std::transform(airport.m_routes.begin(), airport.m_routes.end(), airport.m_routeLengths.begin(),
 			[&airport, &airportInfo](std::pair<int, int> routePair) {			
 			auto destAirport = airportInfo.at(routePair.first);
