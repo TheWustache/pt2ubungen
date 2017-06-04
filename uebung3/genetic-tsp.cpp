@@ -157,11 +157,10 @@ void generateTours(vector< vector<int> >& tourSet) {
 		assert(validTour(T));
 	}
 }
-int crossoverLength = 5;
 // TODO 3.3d: take two (good) parent tours, and build a new one by the gens of both. Hint: Use rand, findCity and insertCity.
 void crossover(const vector<int>& parent1, const vector<int>& parent2, vector<int>& child) {
     // insert half of parent1 somewhere into child
-    int startIdx = rand() % (crossoverLength);
+    int startIdx = rand() % (N/2);
     
     for(int i=0; i<N/2; i++) {
         child[i+startIdx] = parent1[i+startIdx];
@@ -257,7 +256,7 @@ int main(int argc, char** argv) {
 	std::cout << "initial shortest trip: " << F0[0].first << "km" << endl;
 
 	// do a fixed number of evolution steps
-	for(int e=0; e<10000; e++) {
+	for(int e=0; e<20000; e++) {
 		auto lengths = evolution(TourSet);
 
 		// report statistics
