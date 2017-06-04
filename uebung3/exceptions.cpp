@@ -125,41 +125,44 @@ void checkData(std::string path)
 	std::ifstream file;
 
 	// TODO 3.1a: open file + read each line + call parseLine function (catch ifstream::failure)
-    try {
-        // open file
-        file.open(path);
-        file.exceptions(std::ios::failbit);
-    
-    
-        // TODO 3.1c: read each line + call parseLine function (catch FormatException) + count valid + invalid lines
+	try {
+		// open file
+		file.open(path);
+		//eofbit would always be thrown since we iterate until we read it, which calls an exception
+		file.exceptions(std::ios::failbit | std::ios::badbit);
 
-        // call parseLine for each line
-        std::string line;
-        int count = 0;
-        
-        // skip first line
-        std::getline(file, line);
-        
-        while(std::getline(file, line)) {
-            count++;
-            try {
-                parseLine(line, count);
-                validLines++;
-            }
-            catch (FormatException &e) {
-                invalidLines++;
-                writeOutFormatException(e);
-            }
-        }
 
-        // close file
-        file.close();
-        
+		// TODO 3.1c: read each line + call parseLine function (catch FormatException) + count valid + invalid lines
+
+		// call parseLine for each line
+		std::string line;
+		int count = 0;
+
+		// skip first line
+		std::getline(file, line);
+
+		while (file.good()) {
+			std::getline(file, line);
+			count++;
+			try {
+				parseLine(line, count);
+				validLines++;
+			}
+			catch (FormatException &e) {
+				invalidLines++;
+				writeOutFormatException(e);
+			}
+		}
+
+		// close file
+		file.close();
+	}
+	catch (std::ios::failure &fail) {
+			std::cout << "Error opening/reading/closing file: " << fail.what() << std::endl;
+		}
         std::cout << "valid data fields: " << validLines << " - invalid data fields: " << invalidLines << std::endl;
-    }
-    catch (std::ios::failure &fail) {
-        std::cout << "Error opening/reading/closing file: " << fail.what() << std::endl;
-    }
+    
+    
 }
 
 int main(int argc, char * argv[])
