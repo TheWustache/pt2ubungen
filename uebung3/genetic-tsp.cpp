@@ -95,7 +95,7 @@ bool validTour(const vector<int>& tour) {
 // TODO 3.3a: returns distance between two cities based on the distance table
 int cityDistance(int city1, int city2) {
     // assert cities are valid
-    assert(city1 >= 0 && city1 < N && city2 >= 0 && city2 < N);
+    assert(city1 >= 0 && city1 < N && city2 >= 0 && city2 < N && city1!=city2);
     
 	return distance_table[city1][city2];
 }
@@ -117,8 +117,8 @@ int tourLength(const vector<int>& T) {
 //  print city names of a tour
 void printTourCityNames(const vector<int>& T) {
 	assert(validTour(T));
-	for(int i=0; i<N; ++i) cout << (i==0 ? "" : "-") << cityName[T[i]];
-	cout << endl;
+	for(int i=0; i<N; ++i) std::cout << (i==0 ? "" : "-") << cityName[T[i]];
+	std::cout << endl;
 }
 
 // debug, print tour indices
@@ -126,7 +126,7 @@ void printTourSet(const vector<vector<int>>& TourSet) {
 	int tour = 0;
 	for(const auto& T : TourSet) {
 		assert(validTour(T));
-		cout << tour++ << ": " << T << " = " << tourLength(T) << endl;
+		std::cout << tour++ << ": " << T << " = " << tourLength(T) << endl;
 	}
 }
 
@@ -157,11 +157,11 @@ void generateTours(vector< vector<int> >& tourSet) {
 		assert(validTour(T));
 	}
 }
-
+int crossoverLength = 5;
 // TODO 3.3d: take two (good) parent tours, and build a new one by the gens of both. Hint: Use rand, findCity and insertCity.
 void crossover(const vector<int>& parent1, const vector<int>& parent2, vector<int>& child) {
     // insert half of parent1 somewhere into child
-    int startIdx = rand() % (N/2);
+    int startIdx = rand() % (crossoverLength);
     
     for(int i=0; i<N/2; i++) {
         child[i+startIdx] = parent1[i+startIdx];
@@ -171,12 +171,8 @@ void crossover(const vector<int>& parent1, const vector<int>& parent2, vector<in
     int insertIdx = 0;
     
     for(int i=0; i<N; i++) {
-        if(child[i] == -1) {
-            while(findCity(child, parent2[insertIdx])) {
-                insertIdx++;
-            }
-            child[i] = parent2[insertIdx];
-        }
+		if (!findCity(child, parent2[i]))
+			insertCity(child, parent2[i]);
     }
 
 	assert(tourDefined(child)); // check for undefined city indices
@@ -222,6 +218,8 @@ pair<int,int> evolution(vector<vector<int>>& tourSet) {
 	auto F = fitness(tourSet);
 	statistics.first = F[0].first; // tour with shortest tour length
 	statistics.second = F[M-1].first; // tour with largest tour length
+	if (statistics.first < minDist)minDist = statistics.first;
+	if (statistics.second > maxDist)maxDist = statistics.second;
 
 	// compute and store crossover tour
 	const vector<int>& T1 = tourSet[F[0].second]; // take first best tour
@@ -256,10 +254,10 @@ int main(int argc, char** argv) {
 
 	// log on the first tour set generated
 	auto F0 = fitness(TourSet);
-	cout << "initial shortest trip: " << F0[0].first << "km" << endl;
+	std::cout << "initial shortest trip: " << F0[0].first << "km" << endl;
 
 	// do a fixed number of evolution steps
-	for(int e=0; e<5000; e++) {
+	for(int e=0; e<10000; e++) {
 		auto lengths = evolution(TourSet);
 
 		// report statistics
@@ -268,13 +266,12 @@ int main(int argc, char** argv) {
 
 	// after evolution iterations, log on last tour
 	auto FE = fitness(TourSet);
-	cout << "final shortest trip:  " << FE[0].first << "km" << endl;
+	std::cout << "final shortest trip:  " << FE[0].first << "km" << endl;
 	printTourCityNames(TourSet[FE[0].second]);
-	cout << "over all generations, min dist = " << minDist << ", max dist = " << maxDist << endl;
+	std::cout << "over all generations, min dist = " << minDist << ", max dist = " << maxDist << endl;
 
 	// close the log file (use excel to visualize data)
 	stats.close();
-
 	return 0;
 }
 
