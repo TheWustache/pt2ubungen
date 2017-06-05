@@ -167,8 +167,6 @@ void crossover(const vector<int>& parent1, const vector<int>& parent2, vector<in
     }
     
     // fill the rest with parent2
-    int insertIdx = 0;
-    
     for(int i=0; i<N; i++) {
 		if (!findCity(child, parent2[i]))
 			insertCity(child, parent2[i]);
