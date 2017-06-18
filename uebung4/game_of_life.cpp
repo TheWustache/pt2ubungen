@@ -259,6 +259,8 @@ void simulateNextState(Raster &raster, bool isTorus)
             raster.data[h*raster.width+w] = nextData[h*raster.width+w];
         }
     }
+    
+    delete nextData;
 }
 
 int main(int argc, char* argv[])
