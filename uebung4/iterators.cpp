@@ -20,7 +20,26 @@ void printContainer(T& container)
 template<class T>
 void front_back_pairing(T& inContainer, T& outContainer)
 {
-
+    outContainer.clear();
+    
+    // initialize iterators
+    auto iterFront = inContainer.begin();
+    auto iterBack = inContainer.end();
+    --iterBack;
+    
+    // merge
+    for( int i=0; i < inContainer.size()/2; i++ ) {
+        // create pairs
+        outContainer.push_back( *iterFront );
+        outContainer.push_back( *iterBack );
+        // advance iterators
+        ++iterFront;
+        --iterBack;
+    }
+    // if number of elements odd, add last element
+    if( inContainer.size() % 2 == 1) {
+        outContainer.push_back( *iterFront );
+    }
 }
 
 // Todo 4.2b - Remove all duplicates from the given container. Do *not* use the []-operator.
