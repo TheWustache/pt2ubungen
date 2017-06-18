@@ -59,13 +59,35 @@ void remove_duplicates(T& container)
         temp.push_back( *itFirst );
     }
     container = temp;
+//    T temp = new *T();
+//    std::copy( container.begin(), container.end(), temp.begin() );
+//    container = temp;
 }
 
 // Todo 4.2c - Expand the given container by inserting the numerical differences of each element to its neighbors. Do *not* use the []-operator.
 template<class T>
 void insert_differences(T& container)
 {
+    container.insert( container.begin(), *(--container.end()) );
+    container.push_back( *(++container.begin()) );
     
+//    auto temp = container;
+//    temp.clear();
+    T temp;
+    
+    auto first = ++container.begin();
+    auto last = --container.end();
+    
+    for(; first != last; /*first++*/ ) {
+        auto prev = (*--first);
+        auto cur = (*++first);
+        auto next = (*++first);
+//        --first;
+        temp.push_back( prev-cur );
+        temp.push_back( cur );
+        temp.push_back( next-cur );
+    }
+    container = temp;
 }
 
 void testFrontBackPairingFunctionality()
