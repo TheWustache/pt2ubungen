@@ -46,14 +46,26 @@ void front_back_pairing(T& inContainer, T& outContainer)
 template<class T>
 void remove_duplicates(T& container)
 {
-
+    // eliminate duplicates
+    std::sort( container.begin(), container.end() );
+    auto containerEnd = std::unique( container.begin(), container.end() );
+    
+    // remove superfluous elements
+    containerEnd--;
+    auto temp = container;
+    temp.clear();
+    auto itFirst = container.begin();
+    while( itFirst++ != containerEnd ) {
+        temp.push_back( *itFirst );
+    }
+    container = temp;
 }
 
 // Todo 4.2c - Expand the given container by inserting the numerical differences of each element to its neighbors. Do *not* use the []-operator.
 template<class T>
 void insert_differences(T& container)
 {
-
+    
 }
 
 void testFrontBackPairingFunctionality()
