@@ -19,16 +19,50 @@ void printContainer(T& container)
 template<class T>
 void merge(T leftIt, T midIt, T rightIt)
 {
+	//remember start, middle
+	T startIt = leftIt, midIt2 = midIt;
 	assert(leftIt <= midIt && midIt <= rightIt);
-
-	std::vector<T::value_type> mergedValues(rightIt - leftIt);
+	std::vector<T::value_type> mergedValues;
+	//insert the smaller of 2 segments into mergedValues
+	while (leftIt != midIt && midIt2 != rightIt) {
+		if (*leftIt <= *midIt2) {
+			mergedValues.push_back(*leftIt);
+			leftIt++;
+		}
+		else {
+			mergedValues.push_back(*midIt2);
+			midIt2++;
+		}
+	}
+	//add rest of the remaining segment
+	while (leftIt!= midIt) {
+		mergedValues.push_back(*leftIt);
+		leftIt++;
+	}
+	while(midIt2 !=rightIt){
+		mergedValues.push_back(*midIt2);
+		midIt2++;
+	}
+	//copy sorted values back to original values
+	leftIt = mergedValues.begin();
+	rightIt = mergedValues.end();
+	while (leftIt != rightIt) {		
+		*startIt++ = *leftIt++;
+	}
 }
 
 // Todo 4.4 - Sort the given container using merge sort.
 template<class T>
 void mergeSort(T leftIt, T rightIt)
 {
+	if (leftIt + 1 == rightIt) {
+		return;
+	}
 	assert(leftIt < rightIt);
+	T middleIt = leftIt + std::distance(leftIt, rightIt)/2;
+	mergeSort(leftIt, middleIt);
+	mergeSort(middleIt, rightIt);
+	merge(leftIt, middleIt, rightIt);
 }
 
 int main(int argc, char** argv)

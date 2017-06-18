@@ -76,7 +76,10 @@ void importRoutesData(char* path, std::vector<Route>& routes)
 int linearSearch(int destID, std::vector<Route>& routes, long long& numLookups)
 {
 	int numRoutes = 0;
-
+	for(Route r:routes){
+		if (destID == r.destinationId)numRoutes++;
+		numLookups++;
+	}
 	return numRoutes;
 }
 
@@ -87,15 +90,67 @@ std::pair<long long, long long> evaluateLinearSearch(std::vector<Route>& routes)
 {
 	long long numLookups = 0;
 	long long duration = 0;
-
+	auto start = std::chrono::steady_clock::now();
+	for (int i = 1; i <= 9541; i++) {
+		linearSearch(i, routes, numLookups);
+	}
+	auto end = std::chrono::steady_clock::now();
+	duration = std::chrono::duration_cast<std::chrono::microseconds>(end-start).count();
 	return std::make_pair(numLookups, duration);
 }
 
 // Todo 4.3b - Return the number of routes for the given destination id based on a binary search. Count the number of lookups.
 // The vector should have been sorted before calling this function.
+
 int binarySearch(int destID, std::vector<Route>& routes, long long& numLookups)
 {
-	return 0;
+	int low = 0;
+	int high = static_cast<int>(routes.size() - 1);
+	int position = -1;
+	//search a Route in the intervall of all routes that end in destID;
+	while (low <= high) {
+		int middle = (low + high) / 2;
+		numLookups++;
+		if (routes.at(middle).destinationId == destID) {
+			position = middle;
+		}
+		numLookups++;
+		if (routes.at(middle).destinationId < destID) {
+			low = middle + 1;
+		}
+		else {
+			high = middle - 1;
+		}
+	}
+	//find ends of interval
+	if (position == -1)return 0;
+	low = position;
+	//check for lower Bound
+	do {
+		low--;
+		//if cant be in while or lookups is wrong
+		if (low < 0)
+			break;		
+		numLookups++;
+	} while (routes.at(low).destinationId==destID);
+	low++;
+	//check for upper bound
+	high = position;
+	size_t size = routes.size();
+	numLookups++;
+	do {
+		high++;
+		//if cant be in while or lookups is wrong
+		if (high >= size)break;
+		numLookups++;
+	} while (routes.at(high).destinationId == destID);
+	high--;
+	return high-low+1;
+}
+void prepSort(std::vector<Route>& routes) {
+	std::sort(routes.begin(), routes.end(), [](Route r1, Route r2) {
+		return r1 < r2;
+	});
 }
 
 // Todo 4.3b - Evaluate the binarySearch function by calling it for every possible destination id (1..9541).
@@ -104,9 +159,15 @@ int binarySearch(int destID, std::vector<Route>& routes, long long& numLookups)
 // Attention: sorting is *not* part of the evaluation and should be conducted beforehand.
 std::pair<long long, long long> evaluateBinarySearch(std::vector<Route>& routes)
 {
+	prepSort(routes);
 	long long numLookups = 0;
 	long long duration = 0;
-
+	auto start = std::chrono::steady_clock::now();
+	for (int i = 1; i <= 9541; i++) {
+		binarySearch(i, routes, numLookups);
+	}
+	auto end = std::chrono::steady_clock::now();
+	duration = std::chrono::duration_cast<std::chrono::microseconds>(end - start).count();
 	return std::make_pair(numLookups, duration);
 }
 
