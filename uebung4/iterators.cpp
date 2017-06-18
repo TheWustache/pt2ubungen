@@ -52,8 +52,7 @@ void remove_duplicates(T& container)
     
     // remove superfluous elements
     containerEnd--;
-    auto temp = container;
-    temp.clear();
+    T temp;
     auto itFirst = container.begin();
     while( itFirst++ != containerEnd ) {
         temp.push_back( *itFirst );
@@ -68,6 +67,7 @@ void remove_duplicates(T& container)
 template<class T>
 void insert_differences(T& container)
 {
+    // put last element first and vice versa, for cycle
     container.insert( container.begin(), *(--container.end()) );
     container.push_back( *(++container.begin()) );
     
@@ -78,11 +78,10 @@ void insert_differences(T& container)
     auto first = ++container.begin();
     auto last = --container.end();
     
-    for(; first != last; /*first++*/ ) {
+    while( first != last ) {
         auto prev = (*--first);
         auto cur = (*++first);
         auto next = (*++first);
-//        --first;
         temp.push_back( prev-cur );
         temp.push_back( cur );
         temp.push_back( next-cur );

@@ -260,7 +260,7 @@ void simulateNextState(Raster &raster, bool isTorus)
         }
     }
     
-    delete nextData;
+    delete[] nextData;
 }
 
 int main(int argc, char* argv[])
