@@ -216,6 +216,20 @@ void simulateInvasion(Raster &raster, float invasionFactor)
     }
     
     // Todo 4.1c: Flip random some cells (probability to flip for each cell is invasionFactor)
+    
+    for(int h=0; h < raster.height; h++ ) {
+        for(int w=0; w < raster.width; w++) {
+            if( frand() < invasionFactor ) {
+//                if( raster.isAlive(w, h) ) {
+//                    raster.data[h*raster.width+w] = 0;
+//                }
+//                else {
+//                    raster.data[h*raster.width+w] = 1;
+//                }
+                raster.data[h*raster.width+w] = !raster.isAlive( w, h );
+            }
+        }
+    }
 }
 
 void simulateNextState(Raster &raster, bool isTorus)
