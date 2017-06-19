@@ -22,7 +22,7 @@ void merge(T leftIt, T midIt, T rightIt)
 	//remember start, middle
 	T startIt = leftIt, midIt2 = midIt;
 	assert(leftIt <= midIt && midIt <= rightIt);
-	std::vector<T::value_type> mergedValues;
+	std::vector<typename T::value_type> mergedValues;
 	//insert the smaller of 2 segments into mergedValues
 	while (leftIt != midIt && midIt2 != rightIt) {
 		if (*leftIt <= *midIt2) {
