@@ -16,7 +16,7 @@ void printContainer(T& container)
 }
 
 
-// Todo 4.2a - Merge front-back pairings of elements of inContainer into outContainer. Do *not* use the []-operator.
+//4.2a - Merge front-back pairings of elements of inContainer into outContainer. Do *not* use the []-operator.
 template<class T>
 void front_back_pairing(T& inContainer, T& outContainer)
 {
@@ -42,37 +42,24 @@ void front_back_pairing(T& inContainer, T& outContainer)
     }
 }
 
-// Todo 4.2b - Remove all duplicates from the given container. Do *not* use the []-operator.
+//4.2b - Remove all duplicates from the given container. Do *not* use the []-operator.
 template<class T>
 void remove_duplicates(T& container)
 {
     // eliminate duplicates
     std::sort( container.begin(), container.end() );
     auto containerEnd = std::unique( container.begin(), container.end() );
-    
-    // remove superfluous elements
-    containerEnd--;
-    T temp;
-    auto itFirst = container.begin();
-    while( itFirst++ != containerEnd ) {
-        temp.push_back( *itFirst );
-    }
-    container = temp;
-//    T temp = new *T();
-//    std::copy( container.begin(), container.end(), temp.begin() );
-//    container = temp;
+	container.erase(containerEnd, container.end());
 }
 
-// Todo 4.2c - Expand the given container by inserting the numerical differences of each element to its neighbors. Do *not* use the []-operator.
+//4.2c - Expand the given container by inserting the numerical differences of each element to its neighbors. Do *not* use the []-operator.
 template<class T>
 void insert_differences(T& container)
 {
     // put last element first and vice versa, for cycle
     container.insert( container.begin(), *(--container.end()) );
     container.push_back( *(++container.begin()) );
-    
-//    auto temp = container;
-//    temp.clear();
+
     T temp;
     
     auto first = ++container.begin();
