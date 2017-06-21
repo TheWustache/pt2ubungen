@@ -26,8 +26,19 @@ const static int N = 20;
 
 std::ostream & operator<<(std::ostream & os, const std::vector<Interval> & I)
 {
+    
 	// Todo 5.3: Implement a nice print function
-	os << I.size() << std::endl;
+    
+    for( int j=0; j < I.size(); j++ ) {
+        // one line
+        os << "#" << I[j].index << ( I[j].index < 10 ? "  " : " " ) << "|";
+        for( int k=0; k < MaxEnd; k++ ) {
+            os << ( k >= I[j].start && k <= I[j].end ? "█" : "." );
+        }
+        os << "|" << std::endl;
+    }
+    
+//	os << I.size() << std::endl;
 	return os;
 }
 
@@ -49,14 +60,24 @@ void randomize(std::vector<Interval> & intervals)
 void schedule(const std::vector<Interval> & intervals)
 {
 	std::cout << std::endl << "intervals (randomized):" << std::endl << intervals;
-
-
+    
 	// Todo 5.3: Sort intervals
 	auto sorted = intervals;
+    std::sort( sorted.begin(), sorted.end(), []( const Interval &a, const Interval &b ){ return a.end < b.end; });
+    
+    std::cout << std::endl << "intervals (sorted):" << std::endl << sorted;
 
 
 	// Todo 5.3: Implement greedy scheduling
 	auto scheduled = std::vector<Interval>();
+    
+    // insert intervall with smallest end time
+    scheduled.push_back(sorted[0]);
+    for( auto iter = sorted.begin()++; iter != sorted.end()-1; iter++ ) {
+        if( scheduled[ scheduled.size()-1 ].end < (*iter).start ) {
+            scheduled.push_back(*iter);
+        }
+    }
 
 
 	std::cout << std::endl << "intervals (scheduled, " << scheduled.size() << " of " << sorted.size() << " possible)"
