@@ -16,9 +16,9 @@ static const auto weights_table = std::array<int, N * N>{ {
 	-1, -1,  6, -1,  8,  5,
 	 6, -1, -1,  8, -1,  2,
 	 5,  4,  4,  5,  2, -1 } };
-//*/
+	 */
 
-//*
+///*
 // test data: city distances
 // vertices are cities
 // edges denote city connections
@@ -48,7 +48,7 @@ static const auto weights_table = std::array<int, N * N>{ {
 	479, 370, 433,  25, 131, 264,  59,  90,  81, 285, 467, 375, 258, 318,  81,  84,  58, 175,  -1, 142,
 	398, 237, 510, 123, 218, 371, 101,  51,  70, 150, 434, 334, 151, 370,  84,  61,  85,  62, 142,  -1
 } };
-//*/
+//*
 
 int weight(const int i, const int j) // this encapsualtes acces to the table of weights
 {
@@ -115,24 +115,68 @@ std::ostream & operator<<(std::ostream & os, const std::vector<Edge> & E)
 // construct a graph for a given city distance table
 void createGraph(std::vector<Edge> & E, std::vector<Vertex> & V)
 {
-	// Todo 5.1a: clear V and E and insert all vertices and edges
+	//	5.1a: clear V and E and insert all vertices and edges
 	// - every node should be stored only once
 	// - no loops on nodes (edges between single nodes, i.e., edges with weight < 0)
 	// - any edge of nodes a and b is bidirectional, so edge b to a is not required (no duplicates)
-
-
+	E.clear();
+	V.clear();
+	for (int y = 0; y < N; y++) {
+		V.push_back(Vertex(y));
+		for (int x = y + 1; x < N; x++) {
+			if(weight(y,x) != -1)
+				E.push_back(Edge(y, x));
+		}
+	}
 }
 
 // return added weights of a list of edges
 int totalWeight(const std::vector<Edge> & E)
 {
-	// Todo 5.1b: total weight accumulated over the given edges
-
-	return 0;
+	// 5.1b: total weight accumulated over the given edges
+	int sum=0;
+	for (Edge e : E) {
+		sum += e.weight;
+	}
+	return sum;
 }
 
 
 bool printed = false;
+
+std::vector<Vertex>::iterator getMinKey(std::vector<Vertex>::iterator start, std::vector<Vertex>::iterator end){
+	//default = maxKey
+	assert(start != end);
+	auto minVertex = start;
+	while (start != end) {
+		if (start->key < minVertex->key)minVertex = start;
+		start++;
+	}
+	return minVertex;
+}
+std::vector<Vertex*> getNeighbors(Vertex &v, std::vector<Vertex> &V, std::vector<Edge> &E) {
+	std::vector<Vertex*> neighborList(0);
+	for (Edge e : E) {
+		//check for Edges with Vertex v in it
+		if (e.vi1 == v.index) {
+			for(int i=0;i<V.size();i++)
+				//get corresponding Vertex if in V;
+				if (V.at(i).index == e.vi2) {
+					neighborList.push_back(&(V.at(i)));
+					break;
+				}			
+		}else{
+		if (e.vi2 == v.index) {
+			for (int i = 0; i<V.size(); i++)
+				if (V.at(i).index == e.vi1) {
+					neighborList.push_back(&(V.at(i)));
+					break;
+				}
+		}
+		}
+	}
+	return neighborList;
+}
 
 void prim()
 {
@@ -141,8 +185,43 @@ void prim()
 
 	// generate city graph based on distance table
 	createGraph(E, V);
+	for (Vertex v : V) {
+		std::cout << v << ":";
+		for (Edge e : E) {
+			if (e.vi1 == v.index || e.vi2 == v.index)
+				std::cout << " " << e.vi1 << "," << e.vi2 << " ";
+		}
+		std::cout << std::endl;
 
-	// Todo 5.1c: implement prim algorithm
+	}
+	
+	// 5.1c: implement prim algorithm
+	auto processQuere = V;
+	//set starting vertex, randomly chosen 0
+	processQuere.at(3).key = 0;
+	std::vector<Edge> mstEdges{};
+	while (processQuere.size() > 0) {
+		//get position and value of minVertex
+		auto minIt = getMinKey(processQuere.begin(), processQuere.end());
+		Vertex minVertex = *minIt;
+		processQuere.erase(minIt);
+		if (minVertex.parent_index != minVertex.undef) {
+			mstEdges.push_back(Edge(minVertex.index, minVertex.parent_index));
+		}
+		//only neighbors in Q are needed
+		for (Vertex * v : getNeighbors(minVertex, processQuere, E)) {
+			//dont need to check if it is in Q, since neighbors are only chosen from q
+			if (weight(v->index, minVertex.index) < v->key) {
+				v->parent_index = minVertex.index;
+				v->key = weight(v->index, minVertex.index);
+			}
+		}		
+
+	}
+	for (Edge e : mstEdges) {
+		std::cout << e.vi1 << " , " << e.vi2 << std::endl;
+	}
+
 }
 
 
@@ -152,3 +231,4 @@ int main(int argc, char** argv)
 
 	return 0;
 }
+/**/
