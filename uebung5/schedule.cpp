@@ -73,7 +73,7 @@ void schedule(const std::vector<Interval> & intervals)
     
     // insert intervall with smallest end time
     scheduled.push_back(sorted[0]);
-    for( auto iter = sorted.begin()++; iter != sorted.end()-1; iter++ ) {
+    for( auto iter = sorted.begin()++; iter != sorted.end(); iter++ ) {
         if( scheduled[ scheduled.size()-1 ].end < (*iter).start ) {
             scheduled.push_back(*iter);
         }
