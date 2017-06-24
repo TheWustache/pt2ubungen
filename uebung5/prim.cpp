@@ -24,6 +24,8 @@ static const auto weights_table = std::array<int, N * N>{ {
 // edges denote city connections
 // weights denote travel distance
 
+
+
 static const auto N = static_cast<size_t>(20);
 // test data: city distances
 static const auto weights_table = std::array<int, N * N>{ {
@@ -178,6 +180,11 @@ std::vector<Vertex*> getNeighbors(Vertex &v, std::vector<Vertex> &V, std::vector
 	return neighborList;
 }
 
+int getRandomNumber() {
+	return 1;	// chosen by a fair dice roll
+				// guaranteed to be random
+}
+
 void prim()
 {
 	auto V = std::vector<Vertex>(N);
@@ -185,6 +192,7 @@ void prim()
 
 	// generate city graph based on distance table
 	createGraph(E, V);
+	/*
 	for (Vertex v : V) {
 		std::cout << v << ":";
 		for (Edge e : E) {
@@ -193,12 +201,11 @@ void prim()
 		}
 		std::cout << std::endl;
 
-	}
-	
+	}*/
 	// 5.1c: implement prim algorithm
 	auto processQuere = V;
 	//set starting vertex, randomly chosen 0
-	processQuere.at(3).key = 0;
+	processQuere.at(getRandomNumber()).key = 0;
 	std::vector<Edge> mstEdges{};
 	while (processQuere.size() > 0) {
 		//get position and value of minVertex
@@ -218,6 +225,7 @@ void prim()
 		}		
 
 	}
+	
 	for (Edge e : mstEdges) {
 		std::cout << e.vi1 << " , " << e.vi2 << std::endl;
 	}
