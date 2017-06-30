@@ -177,6 +177,7 @@ std::vector<Vertex*> getNeighbors(Vertex &v, std::vector<Vertex> &V, std::vector
 		}
 		}
 	}
+	//has multiples but doesnt matter, will only be worked on once
 	return neighborList;
 }
 
@@ -226,9 +227,8 @@ void prim()
 
 	}
 	
-	for (Edge e : mstEdges) {
-		std::cout << e.vi1 << " , " << e.vi2 << std::endl;
-	}
+	std::cout << mstEdges << std::endl;
+	std::cout << "total cost:" << totalWeight(mstEdges);
 
 }
 
