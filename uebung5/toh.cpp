@@ -7,7 +7,7 @@
 #include <cstring>
 #include <cmath>
 
-static const auto N = 10;
+static const auto N = 8;
 
 auto A = std::vector<int>();
 auto B = std::vector<int>();

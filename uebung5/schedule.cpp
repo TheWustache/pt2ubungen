@@ -1,14 +1,14 @@
-//
+#include <string>
 #include <iostream>
 #include <time.h>
 #include <vector>
 #include <algorithm>
 
-#ifdef _WIN32
+/*#ifdef _WIN32
 std::string block = char(219);
-#else
+#else*/
 std::string block = "\u2588";
-#endif
+//#endif
 
 struct Interval
 {
