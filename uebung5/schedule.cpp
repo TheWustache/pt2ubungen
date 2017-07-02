@@ -4,6 +4,11 @@
 #include <vector>
 #include <algorithm>
 
+#ifdef _WIN32
+std::string block = char(219);
+#else
+std::string block = "\u2588";
+#endif
 
 struct Interval
 {
@@ -31,7 +36,7 @@ std::ostream & operator<<(std::ostream & os, const std::vector<Interval> & I)
         // one line
         os << "#" << I[j].index << ( I[j].index < 10 ? "  " : " " ) << "|";
         for( int k=0; k < MaxEnd; k++ ) {
-            os << ( k >= I[j].start && k <= I[j].end ? "█" : "." );
+            os << ( k >= I[j].start && k <= I[j].end ? block : "." );
         }
         os << "|" << std::endl;
     }
