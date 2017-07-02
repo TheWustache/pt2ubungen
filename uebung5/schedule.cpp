@@ -5,7 +5,7 @@
 #include <algorithm>
 
 #ifdef _WIN32
-std::string block = char(219);
+std::string block = std::string(char(219));
 #else
 std::string block = "\u2588";
 #endif
