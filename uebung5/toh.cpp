@@ -6,6 +6,7 @@
 #include <vector>
 #include <cstring>
 #include <cmath>
+static std::string block = "\u2588";
 
 static const auto N = 8;
 
@@ -23,7 +24,7 @@ void printTimes(const std::string s, const int n) {
 void printEmptyLine() {
 	for (int rows = 0; rows < 3; rows++) {
 		printTimes(" ", N+2);
-		std::cout << "\u2588";//char(219) doesnt work on mac
+		std::cout << block;//char(219) doesnt work on mac
 		printTimes(" ", N+2);
 		std::cout << ' ';
 	}
@@ -36,7 +37,7 @@ void printColumnRow(const int row) {
 		//2n + 1 wide columns, 2n high
 		//determine size of slice to print(or just space)
 		if (N - stacks[column]->size() <= row) {
-			printchar = "\u2588";
+			printchar = block;
 			slideSize = stacks[column]->at(N - 1 - row);
 		}
 		else {
@@ -46,7 +47,7 @@ void printColumnRow(const int row) {
 		//print slices
 		printTimes(" ", 2 + (N - slideSize));
 		printTimes(printchar, slideSize);
-		std::cout << "\u2588"; //middle
+		std::cout << block; //middle
 		printTimes(printchar, slideSize);
 		printTimes(" ", 2 + (N - slideSize));
 		std::cout << ' ';
@@ -55,15 +56,15 @@ void printColumnRow(const int row) {
 }
 
 void printBottom() {
-	printTimes("\u2588", 7 * 2 + 3 + N*6);
+	printTimes(block, 7 * 2 + 3 + N*6);
 	std::cout << std::endl;
-	printTimes("\u2588", 2+N);
+	printTimes(block, 2+N);
 	std::cout << 'A';
-	printTimes("\u2588", 2*(N+2)+1);
+	printTimes(block, 2*(N+2)+1);
 	std::cout << 'B';
-	printTimes("\u2588", 2 * (N + 2) + 1);
+	printTimes(block, 2 * (N + 2) + 1);
 	std::cout << 'C';
-	printTimes("\u2588", N+2);
+	printTimes(block, N+2);
 }
 void print()
 {
