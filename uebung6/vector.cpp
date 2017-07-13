@@ -3,70 +3,160 @@
 #include <cmath>
 #include <stdlib.h>
 #include <time.h>
-
 #include <vector>
 
-struct Vector3d
+class Vector3d
 {
 	double x_;
 	double y_;
 	double z_;
+public:
+	Vector3d(double x = 0, double y = 0, double z = 0) {
+		x_ = x;
+		y_ = y;
+		z_ = z;
+	}
+	~Vector3d() {};
+
+	double& operator[](std::size_t idx){
+		switch (idx) {
+		case 0: return x_;
+		case 1: return y_;
+		case 2: return z_;
+		default: throw new std::out_of_range("Vector3d only has 3 elements");
+		}
+	}
+	double operator[](std::size_t idx) const {
+		switch (idx) {
+		case 0: return x_;
+		case 1: return y_;
+		case 2: return z_;
+		default: throw new std::out_of_range("Vector3d only has 3 elements");
+		}
+	}
+
+	double length() const
+	{
+		return std::sqrt(dot(*this));
+	}
+
+	double dot(const Vector3d& v1) const
+	{
+		return v1.x_ *x_ + v1.y_ * y_ + v1.z_ * z_;
+	}
+	void normalize()
+	{
+		double len = length();
+		*this = *this/len;
+	}
+	Vector3d cross(const Vector3d& v1) const
+	{
+		return Vector3d{
+			v1.y_ * z_ - v1.z_ * y_,
+			v1.z_ * x_ - v1.x_ * z_,
+			v1.x_ * y_ - v1.y_ * x_ };
+	}
+
+	
+	Vector3d operator=(const Vector3d& v)
+	{
+		if (this != &v) {
+			x_ = v[0];
+			y_ = v[1];
+			z_ = v[2];
+		}
+		return *this;
+	}
+	Vector3d operator+(const Vector3d& v) const
+	{
+		return Vector3d{ v[0] + x_, v[1] + y_ , v[2] + z_ };
+	}
+	Vector3d operator+=(const Vector3d& v)
+	{
+		return *this=(*this + v);
+	}	
+	Vector3d operator-(const Vector3d& v) const
+	{
+		return Vector3d{ v[0] - x_, v[1] - y_ , v[2] - z_ };
+	}
+	Vector3d operator-() const
+	{
+		return Vector3d{-x_, -y_ , -z_ };
+	}
+	Vector3d operator-=(const Vector3d& v)
+	{
+		return *this = (*this - v);
+	}
+	Vector3d operator*(double scalar) const
+	{
+		return Vector3d{ x_ * scalar, y_ * scalar, z_ * scalar };
+	}
+	Vector3d operator/(double scalar) const
+	{
+		assert(scalar);
+		return Vector3d{ x_ / scalar, y_ / scalar, z_ / scalar };
+	}
+	bool operator==(Vector3d& v1) const
+	{
+		return v1[0] == x_ && v1[1] == y_ && v1[2] == x_;
+	}
+	bool operator!=(Vector3d& v1) const
+	{
+		return !(*this == v1);
+	}
+	
 };
 
-Vector3d plus(const Vector3d& v1, const Vector3d& v2)
+std::ostream& operator<<(std::ostream& os, const Vector3d& v) {
+	os << "(" << v[0] << "," << v[1] << "," << v[2] << ")" << std::endl;
+	return os;
+}
+/*
+Vector3d operator+(const Vector3d& v1, const Vector3d& v2)
 {
-	return Vector3d{v1.x_ + v2.x_, v1.y_ + v2.y_, v1.z_ + v2.z_};
+	return v1 + v2;
 }
 
-Vector3d minus(const Vector3d& v1, const Vector3d& v2)
+Vector3d operator-(const Vector3d& v1, const Vector3d& v2)
 {
-	return Vector3d{v1.x_ - v2.x_, v1.y_ - v2.y_, v1.z_ - v2.z_};
-}
+	return v1 - v2;
+}*/
 
-Vector3d times(const Vector3d& v, double scalar)
+Vector3d operator*(double scalar, const Vector3d& v)
 {
-	return Vector3d{v.x_ * scalar, v.y_ * scalar, v.z_ * scalar};
-}
-
-Vector3d divide(const Vector3d& v, double scalar)
-{
-	assert(scalar);
-	return Vector3d{v.x_ / scalar, v.y_ / scalar, v.z_ / scalar};
+	return v*scalar;
 }
 
 Vector3d cross(const Vector3d& v1, const Vector3d& v2)
 {
-	return Vector3d{
-				v1.y_ * v2.z_ - v1.z_ * v2.y_,
-				v1.z_ * v2.x_ - v1.x_ * v2.z_,
-				v1.x_ * v2.y_ - v1.y_ * v2.x_};
+	return v1.cross(v2);
 }
 
 double dot(const Vector3d& v1, const Vector3d& v2)
 {
-	return v1.x_ * v2.x_ + v1.y_ * v2.y_ + v1.z_ * v2.z_;
+	return v1.dot(v2);
 }
 
 double length(const Vector3d& v)
 {
 	return std::sqrt(dot(v, v));
 }
-
+/*
 void normalize(Vector3d& v)
 {
 	double len = length(v);
 	v = divide(v, len);
-}
+}*/
 
-void print(Vector3d& v)
+/*void print(Vector3d& v)
 {
 	std::cout << "(" << v.x_ << "," << v.y_ << "," << v.z_ << ")" << std::endl;
-}
+}*/
 
 //
 // some tests for Vector3d
 //
-/*void test()
+void test()
 {
 	// test default constructor
 	Vector3d v1;
@@ -151,7 +241,7 @@ void print(Vector3d& v)
 	double sp2 = dot(v100,v100);
 	std::cout << v100 << "." << v100 << " = " << sp2 << std::endl;
 	assert(sp2 == 1);
-}*/
+}
 
 int main(int argc, char** argv)
 {
