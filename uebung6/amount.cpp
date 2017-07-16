@@ -50,6 +50,12 @@ public:
 		taxAmount { netto * taxRate / 100.0},
 		brutto { netto + taxAmount}
 		{}*/
+	Amount(double amount,Tax t = NORMAL, Currency c = EUR) :
+		netto{ amount },
+		description{ "" },
+		currentCurrency{ c },
+		taxRate{ t } {}
+	~Amount() {};
 	Amount(double amount, std::string des = "", Tax t = NORMAL, Currency c = EUR) :
 		netto{ amount },
 		description{ des },
