@@ -18,38 +18,7 @@ public:
 	enum Currency {
 		EUR, USD
 	};
-	/*Amount(double amount, Tax t = NORMAL, Currency c = EUR) :
-		netto{ amount },
-		description{ "" },
-		currentCurrency{ c },
-		taxRate{ NORMAL },
-		taxAmount{ netto * taxRate / 100.0 },
-		brutto{ netto + taxAmount }
-		{}
-	Amount(double amount, Tax t) :
-		netto { amount},
-		description { ""},
-		currentCurrency { EUR},
-		taxRate { NORMAL},
-		taxAmount { netto * taxRate / 100.0},
-		brutto { netto + taxAmount}
-		{}
-	Amount(double amount, std::string des = "", Tax t = NORMAL) :
-		netto { amount},
-		description { des},
-		currentCurrency { EUR},
-		taxRate { NORMAL},
-		taxAmount { netto * taxRate / 100.0},
-		brutto { netto + taxAmount}
-	{}
-	Amount(double amount, std::string des = "", Currency c = EUR) :
-		netto { amount},
-		description { des},
-		currentCurrency { c},
-		taxRate { NORMAL},
-		taxAmount { netto * taxRate / 100.0},
-		brutto { netto + taxAmount}
-		{}*/
+
 	Amount(double amount,Tax t, Currency c = EUR) :
 		netto{ amount },
 		description{ "" },
@@ -68,7 +37,7 @@ public:
 	std::string getDescription() const {
 		return description;
 	}
-	//maybe add rounding
+	//No rounding added
 	double getNetto()const {
 		return netto;
 	}
@@ -124,22 +93,6 @@ void test()
 	Amount a3 = Amount(b, "a3", REDUCED); testClasses.push_back(a3);
 	Amount a4 = Amount(c, "a4", REDUCED, Amount::USD); testClasses.push_back(a4);
 	Amount a5 = Amount(c, "a5", REDUCED, Amount::EUR); testClasses.push_back(a5);
-	/*
-	for (Amount a : testClasses) {
-		std::cout << a << ", Currency: " << a.getCurrency() << ", taxAmount: " << a.getBrutto() - a.getNetto() << ", taxRate: " << a.getTax();
-		std::cout << std::endl;
-	}
-	std::cout << std::endl;
-	for (Amount a : testClasses) {
-		a.setCurrency(Amount::EUR);
-		std::cout << a <<std::endl;
-	}
-	std::cout << std::endl;
-	for (Amount a : testClasses) {
-		a.setCurrency(Amount::USD);
-		std::cout << a << std::endl;
-	}
-	*/
 	assert(a5.getDescription() == "a5");
 	assert(a5.getNetto() ==10);
 	assert(a5.getTax() == REDUCED);
