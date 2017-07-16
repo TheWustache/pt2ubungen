@@ -111,16 +111,6 @@ std::ostream& operator<<(std::ostream& os, const Vector3d& v) {
 	os << "(" << v[0] << "," << v[1] << "," << v[2] << ")" << std::endl;
 	return os;
 }
-/*
-Vector3d operator+(const Vector3d& v1, const Vector3d& v2)
-{
-	return v1 + v2;
-}
-
-Vector3d operator-(const Vector3d& v1, const Vector3d& v2)
-{
-	return v1 - v2;
-}*/
 
 Vector3d operator*(double scalar, const Vector3d& v)
 {
@@ -141,17 +131,6 @@ double length(const Vector3d& v)
 {
 	return std::sqrt(dot(v, v));
 }
-/*
-void normalize(Vector3d& v)
-{
-	double len = length(v);
-	v = divide(v, len);
-}*/
-
-/*void print(Vector3d& v)
-{
-	std::cout << "(" << v.x_ << "," << v.y_ << "," << v.z_ << ")" << std::endl;
-}*/
 
 //
 // some tests for Vector3d
