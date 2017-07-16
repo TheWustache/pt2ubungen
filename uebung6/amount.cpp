@@ -50,12 +50,12 @@ public:
 		taxAmount { netto * taxRate / 100.0},
 		brutto { netto + taxAmount}
 		{}*/
-	Amount(double amount,Tax t = NORMAL, Currency c = EUR) :
+	Amount(double amount,Tax t, Currency c = EUR) :
 		netto{ amount },
 		description{ "" },
 		currentCurrency{ c },
 		taxRate{ t } {}
-	~Amount() {};
+
 	Amount(double amount, std::string des = "", Tax t = NORMAL, Currency c = EUR) :
 		netto{ amount },
 		description{ des },
@@ -118,6 +118,7 @@ void test()
 	// Implement tests
 	double a = 5.0, b = 7.5, c = 10;
 	std::vector<Amount> testClasses;
+	Amount a0 = Amount(b, NORMAL); testClasses.push_back(a0);
 	Amount a1 = Amount(b); testClasses.push_back(a1);
 	Amount a2 = Amount(a, "a2"); testClasses.push_back(a2);
 	Amount a3 = Amount(b, "a3", REDUCED); testClasses.push_back(a3);
