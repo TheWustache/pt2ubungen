@@ -54,11 +54,7 @@ public:
 		netto{ amount },
 		description{ des },
 		currentCurrency{ c },
-		taxRate{ t }
-	{
-		taxAmount = netto * taxRate / 100.0;
-		brutto = netto + taxAmount;
-	}
+		taxRate{ t } {}
 	~Amount() {};
 	void changeDescription(std::string des) {
 		description = des;
@@ -77,7 +73,7 @@ public:
 		setNetto(netto + n);
 	}
 	double getBrutto() const {
-		return brutto;
+		return netto + (netto * taxRate / 100.0);
 	}
 	Currency getCurrency() const {
 		return currentCurrency;
@@ -88,8 +84,6 @@ public:
 				netto = netto * EURtoUSD;
 			else
 				netto = netto / EURtoUSD;
-			taxAmount = netto * (taxRate / 100.0);
-			brutto = netto + taxAmount;
 			currentCurrency = c;
 		}
 	}
@@ -103,7 +97,6 @@ private:
 	const double EURtoUSD = 1.5;
 	double netto;
 	double taxAmount;
-	double brutto;
 	std::string description;
 	Tax taxRate;
 	Currency currentCurrency;
@@ -117,13 +110,14 @@ std::ostream& operator<<(std::ostream& os, const Amount& a) {
 void test()
 {
 	// Implement tests
-	double a = 5.0, b = 7.5, c = 12.5;
+	double a = 5.0, b = 7.5, c = 10;
 	std::vector<Amount> testClasses;
 	Amount a1 = Amount(b); testClasses.push_back(a1);
 	Amount a2 = Amount(a, "a2"); testClasses.push_back(a2);
 	Amount a3 = Amount(b, "a3", REDUCED); testClasses.push_back(a3);
 	Amount a4 = Amount(c, "a4", REDUCED, Amount::USD); testClasses.push_back(a4);
-	Amount a5 = Amount(c, "a4", REDUCED, Amount::EUR); testClasses.push_back(a5);
+	Amount a5 = Amount(c, "a5", REDUCED, Amount::EUR); testClasses.push_back(a5);
+	/*
 	for (Amount a : testClasses) {
 		std::cout << a << ", Currency: " << a.getCurrency() << ", taxAmount: " << a.getBrutto() - a.getNetto() << ", taxRate: " << a.getTax();
 		std::cout << std::endl;
@@ -138,8 +132,21 @@ void test()
 		a.setCurrency(Amount::USD);
 		std::cout << a << std::endl;
 	}
-
-
+	*/
+	assert(a5.getDescription() == "a5");
+	assert(a5.getNetto() ==10);
+	assert(a5.getTax() == REDUCED);
+	a5.changeDescription("test");
+	assert(a5.getDescription() == "test");
+	assert(a5.getBrutto() == 11.3);
+	a5.setCurrency(Amount::USD);
+	assert(a5.getNetto()==15);
+	assert(a5.getBrutto()== 16.95);
+	a5.changeTax(NORMAL);
+	assert(a5.getNetto() == 15);
+	assert(a5.getBrutto() == 17.85);
+	a5.addNetto(15);
+	assert(a5.getBrutto() == 35.7);
 }
 
 int main()
