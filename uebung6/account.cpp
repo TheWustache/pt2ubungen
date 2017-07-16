@@ -74,11 +74,11 @@ class LoggedAccount : public Account {
 public:
     LoggedAccount(long accountNo, double balance, double limit, bool locked);
     
-    void setLimit(double limit);
+    virtual void setLimit(double limit);
     virtual bool credit(double amount);
     virtual bool debit(double amount);
     
-    vector<pair<string, double>> transactions();
+    vector<pair<string, double>> transactions() const;
     
 private:
     vector<pair<string, double>> transactionList;
@@ -114,7 +114,7 @@ bool LoggedAccount::debit(double amount) {
     return false;
 }
 
-vector<pair<string, double>> LoggedAccount::transactions() {
+vector<pair<string, double>> LoggedAccount::transactions() const {
     return transactionList;
 }
 
