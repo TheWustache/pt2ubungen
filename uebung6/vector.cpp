@@ -52,9 +52,9 @@ public:
 	Vector3d cross(const Vector3d& v1) const
 	{
 		return Vector3d{
-			v1.y_ * z_ - v1.z_ * y_,
-			v1.z_ * x_ - v1.x_ * z_,
-			v1.x_ * y_ - v1.y_ * x_ };
+			y_ * v1.z_ - z_ * v1.y_,
+			z_ * v1.x_ - x_ * v1.z_,
+			x_ * v1.y_ - y_ * v1.x_ };
 	}
 
 	
@@ -85,7 +85,7 @@ public:
 	}
 	Vector3d operator-=(const Vector3d& v)
 	{
-		return *this = (*this - v);
+		return (*this = *this + (-v));
 	}
 	Vector3d operator*(double scalar) const
 	{
@@ -245,6 +245,6 @@ void test()
 
 int main(int argc, char** argv)
 {
-	//test();
+	test();
 	return 0;
 }
