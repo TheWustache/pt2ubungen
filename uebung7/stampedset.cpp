@@ -94,9 +94,11 @@ public:
 			std::vector<stamp_type>& tempVec = pair.second;
 			const T& obj = pair.first;
 			auto lowerBound = std::lower_bound(tempVec.begin(), tempVec.end(), from);
-			//auto upperBound = std::upper_bound(tempVec.begin(), tempVec.end(), to);
+			auto upperBound = std::upper_bound(tempVec.begin(), tempVec.end(), to);
+			if (upperBound != tempVec.end())
+				upperBound++;
 			//not as efficient as i want it but oh well
-			tempVec.erase(remove_if(lowerBound, tempVec.end(), [obj, fct, from, to](stamp_type s) {return fct(obj, s) &&(s<=to);  } ), tempVec.end());
+			tempVec.erase(remove_if(lowerBound, upperBound, [obj, fct, from, to](stamp_type s) {return fct(obj, s) && s>from && s<=to; }), tempVec.end());
 				if (tempVec.empty())
 					add(obj);
 		}
@@ -114,7 +116,6 @@ public:
 
 private:
 	stamp_type stampCount = 0;
-	std::map
 	std::unordered_map<T, std::vector<stamp_type>> stampMap;
 };
 
