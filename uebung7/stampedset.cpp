@@ -1,7 +1,8 @@
 #include <iostream>
 #include <assert.h>
 #include <unordered_map>
-#include <vector>
+#include <set>
+#include <list>
 #include <algorithm>
 
 using namespace std;
@@ -13,18 +14,30 @@ public:
 	StampedSet() {}
 
 	stamp_type add(const T& obj) {
+		int num = noOfStamps();
 		if (auto objectPos = stampMap.find(obj) == stampMap.end()) {
-			stampMap.insert(make_pair(obj, vector<stamp_type>({ stampCount++ })));
+			stampMap.insert(make_pair(obj, list<stamp_type>({ stampCount })));
 		}
 		else {
-			stampMap.at(obj).push_back(stampCount++);
+			stampMap.at(obj).push_back(stampCount);
 		}
+		helperMap.insert(make_pair(stampCount++, obj));
+		assert(num == noOfStamps() - 1);
 		return stampCount - 1;
 	}
 
 	void erase(const T& obj) {
-		assert(stampMap.find(obj) != stampMap.end());
-		stampMap.erase(stampMap.find(obj));
+		//assert(stampMap.find(obj) != stampMap.end()); moved to if-statement to be more user friendly;
+		if (stampMap.find(obj) != stampMap.end()) {
+			for (auto it = helperMap.cbegin(); it != helperMap.cend();) {
+				if ((*it).second == obj)
+					it = helperMap.erase(it);
+				else
+					++it;
+			}
+			stampMap.erase(stampMap.find(obj));
+		}
+		assert(stampMap.find(obj) == stampMap.end());
 	}
 
 	unsigned long noOfObjects() const {
@@ -32,11 +45,9 @@ public:
 	}
 
 	unsigned long noOfStamps() const {
-		size_t size = 0;
-		for (auto pair : stampMap) {
-			size += pair.second.size();
-		}
-		return static_cast<unsigned long>(size);
+		unsigned long size = static_cast<unsigned long>(helperMap.size());
+		assert(noOfObjects() <= size);
+		return size;
 	}
 
 	bool containsObject(const T& obj) const {
@@ -44,33 +55,22 @@ public:
 	}
 
 	bool containsStamp(const stamp_type& s) const {
-		//costly operation
-		for (std::pair<T, vector<stamp_type>> pair : stampMap) {
-			for (stamp_type stamp : pair.second) {
-				if (stamp == s)return true;
-			}
-		}
-
-		return false;
+		return helperMap.find(s) != helperMap.end();
 	}
 
 	const T& findObject(const stamp_type& s) const {
-		for (auto pair : stampMap) {
-			for (stamp_type stamp : pair.second) {
-				if (stamp == s)return pair.first;
-			}
-		}
-		return false;
+		assert(helperMap.find(s) != helperMap.end());
+		return(helperMap.at(s));
 	}
 
 	stamp_type lastStamp(const T& obj) const {
 		assert(stampMap.find(obj) != stampMap.end());
-		return *(stampMap.at(obj).end() - 1);
+		return stampMap.at(obj).back();
 	}
 
 	stamp_type firstStamp(const T& obj) const {
 		assert(stampMap.find(obj) != stampMap.end());
-		return *(stampMap.at(obj).begin());
+		return stampMap.at(obj).front();
 	}
 
 	stamp_type nextStamp() const {
@@ -80,29 +80,58 @@ public:
 	template<typename L>
 	void process(const T& obj, L&& fct) {
 		assert(stampMap.find(obj) != stampMap.end());
-		std::vector<stamp_type>& tempVec = stampMap.at(obj);
-		tempVec.erase(remove_if(tempVec.begin(), tempVec.end(), [obj, fct](stamp_type s) {return fct(obj, s); }), tempVec.end());
-		if (tempVec.empty())
+		std::list<stamp_type>& tempList = stampMap.at(obj);
+		for (auto it = tempList.begin(); it != tempList.end();) {
+			if (fct(obj, *it)) {
+				helperMap.erase(*it);
+				it = tempList.erase(it);
+			}
+			else {
+				it++;
+			}
+		}
+		//not fast enouth :(
+		//tempVec.erase(remove_if(tempVec.begin(), tempVec.end(), [obj, fct](stamp_type s) {return fct(obj, s); }), tempVec.end()); 
+		if (tempList.empty()) {
 			add(obj);
+		}
+		assert(tempList.size() > 0);
 	}
 
 
 	template<typename L>
 	void process(stamp_type from, stamp_type to, L&& fct) {
 		if (to < from)return;
-		for (auto& pair : stampMap) {
-			std::vector<stamp_type>& tempVec = pair.second;
-			const T& obj = pair.first;
-			auto lowerBound = std::lower_bound(tempVec.begin(), tempVec.end(), from);
-			auto upperBound = std::upper_bound(tempVec.begin(), tempVec.end(), to);
-			if (upperBound != tempVec.end())
-				upperBound++;
-			//not as efficient as i want it but oh well
-			tempVec.erase(remove_if(lowerBound, upperBound, [obj, fct, from, to](stamp_type s) {return fct(obj, s) && s>from && s<=to; }), tempVec.end());
-				if (tempVec.empty())
-					add(obj);
+		std::set<T> objQuere;
+		for (stamp_type i = from; i <= to; i++) {
+			auto tIt = helperMap.find(i);
+			if(tIt != helperMap.end()){
+			T tempObj = tIt->second;
+			if (objQuere.find(tempObj) == objQuere.end())
+				objQuere.insert(tempObj);
+			}
 		}
-
+		for (T tempObj : objQuere) {
+			std::list<stamp_type>& tempList = stampMap.at(tempObj);
+			for (auto it = tempList.begin(); it != tempList.end();) {
+				if (*it > to)break;
+				if (*it >= from) {
+					if (fct(tempObj, *it)) {
+						helperMap.erase(*it);
+						it = tempList.erase(it);
+					}
+					else {
+						it++;
+					}
+				}
+				else {
+					it++;
+				}
+			}
+			if (tempList.empty()) {
+				add(tempObj);
+			}
+		}
 	}
 
 	stamp_type restart(const T& obj) {
@@ -116,7 +145,8 @@ public:
 
 private:
 	stamp_type stampCount = 0;
-	std::unordered_map<T, std::vector<stamp_type>> stampMap;
+	std::unordered_map<stamp_type, T> helperMap;
+	std::unordered_map<T, std::list<stamp_type>> stampMap;
 };
 
 
@@ -136,7 +166,7 @@ void test() {
 	f = 3.14f; s = sfs.add(f); assert(sfs.containsStamp(s)); assert(sfs.containsObject(f));
 	f = 1.11f; s = sfs.add(f); assert(sfs.containsStamp(s)); assert(sfs.containsObject(f));
 	f = 1.11f; s = sfs.add(f); assert(sfs.containsStamp(s)); assert(sfs.containsObject(f));
-
+	
 	// test process by lambda that prints contents
 	sfs.process(0, sfs.nextStamp(), [](float f, int i) { cout << "(" << f << ", " << i << ") "; return false; }); cout << endl;
 
@@ -155,18 +185,19 @@ void test() {
 
 	// check find object
 	f = 2.55f; s = sfs.add(f); assert(f == sfs.findObject(s));
-
+	sfs.process(0, sfs.nextStamp(), [](float f, int i) { cout << "(" << f << ", " << i << ") "; return false; }); cout << endl;
 	int N{ 0 };
-	sfs.process(0, 100, [&N](float f, int i) { N++; return false; }); cout << "test " << "N: " << N << ", stamps: " << sfs.noOfStamps() << endl; assert(N == sfs.noOfStamps());
+	sfs.process(0, 100, [&N](float f, int i) { N++; return false; }); cout << "N: " << N << ", stamps: " << sfs.noOfStamps() << endl; assert(N == sfs.noOfStamps());
 
 	// test process deletion
-	
+
 	f = 3.14f; sfs.process(f, [](float f, int i) { return true; }); assert(sfs.lastStamp(f) == 18);
 	sfs.process(1, 7, [](float f, int i) { return f < 6.0f; });	assert(sfs.lastStamp(5.01f) == 19); assert(sfs.firstStamp(9.99f) == 1); assert(sfs.firstStamp(1.11f) == 8);
 
 	// check different instantiations
 	StampedSet<string, int> sss;
 	StampedSet<char, unsigned long> scs;
+
 }
 
 
