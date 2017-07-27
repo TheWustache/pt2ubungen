@@ -111,6 +111,7 @@ public:
 				objQuere.insert(tempObj);
 			}
 		}
+		//still error
 		for (T tempObj : objQuere) {
 			std::list<stamp_type>& tempList = stampMap.at(tempObj);
 			for (auto it = tempList.begin(); it != tempList.end();) {
@@ -136,10 +137,8 @@ public:
 
 	stamp_type restart(const T& obj) {
 		assert(stampMap.find(obj) != stampMap.end());
-		auto& vector = stampMap.at(obj);
-		vector.erase(vector.begin(), vector.end());
-		vector.push_back(stampCount++);
-		assert(vector.size() == 1);
+		erase(obj);
+		add(obj);
 		return stampCount - 1;
 	}
 
