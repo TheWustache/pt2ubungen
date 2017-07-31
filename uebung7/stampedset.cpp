@@ -28,7 +28,8 @@ public:
 
 	void erase(const T& obj) {
 		//assert(stampMap.find(obj) != stampMap.end()); moved to if-statement to be more user friendly;
-		if (stampMap.find(obj) != stampMap.end()) {
+		if (stampMap.count(obj)) {
+			//erase out of both maps
 			for (auto it = helperMap.cbegin(); it != helperMap.cend();) {
 				if ((*it).second == obj)
 					it = helperMap.erase(it);
@@ -37,7 +38,7 @@ public:
 			}
 			stampMap.erase(stampMap.find(obj));
 		}
-		assert(stampMap.find(obj) == stampMap.end());
+		assert(!stampMap.count(obj));
 	}
 
 	unsigned long noOfObjects() const {
@@ -51,25 +52,25 @@ public:
 	}
 
 	bool containsObject(const T& obj) const {
-		return (stampMap.find(obj) != stampMap.end());
+		return (stampMap.count(obj));
 	}
 
 	bool containsStamp(const stamp_type& s) const {
-		return helperMap.find(s) != helperMap.end();
+		return helperMap.count(s);
 	}
 
 	const T& findObject(const stamp_type& s) const {
-		assert(helperMap.find(s) != helperMap.end());
+		assert(containsStamp(s));
 		return(helperMap.at(s));
 	}
 
 	stamp_type lastStamp(const T& obj) const {
-		assert(stampMap.find(obj) != stampMap.end());
+		assert(containsObject(obj));
 		return stampMap.at(obj).back();
 	}
 
 	stamp_type firstStamp(const T& obj) const {
-		assert(stampMap.find(obj) != stampMap.end());
+		assert(containsObject(obj));
 		return stampMap.at(obj).front();
 	}
 
@@ -79,10 +80,11 @@ public:
 
 	template<typename L>
 	void process(const T& obj, L&& fct) {
-		assert(stampMap.find(obj) != stampMap.end());
+		assert(containsObject(obj));
 		std::list<stamp_type>& tempList = stampMap.at(obj);
 		for (auto it = tempList.begin(); it != tempList.end();) {
 			if (fct(obj, *it)) {
+				//remove out of both maps if needed
 				helperMap.erase(*it);
 				it = tempList.erase(it);
 			}
@@ -90,19 +92,21 @@ public:
 				it++;
 			}
 		}
-		//not fast enouth :(
-		//tempVec.erase(remove_if(tempVec.begin(), tempVec.end(), [obj, fct](stamp_type s) {return fct(obj, s); }), tempVec.end()); 
+		//if all were deleted
 		if (tempList.empty()) {
 			add(obj);
 		}
 		assert(tempList.size() > 0);
 	}
+	//not fast enouth :(
+	//tempVec.erase(remove_if(tempVec.begin(), tempVec.end(), [obj, fct](stamp_type s) {return fct(obj, s); }), tempVec.end()); 
 
 
 	template<typename L>
 	void process(stamp_type from, stamp_type to, L&& fct) {
-		if (to < from)return;
+		if (to < from)return;//could be made an assertion
 		std::set<T> objQuere;
+		//look for objects to process in order to not check them twice
 		for (stamp_type i = from; i <= to; i++) {
 			auto tIt = helperMap.find(i);
 			if(tIt != helperMap.end()){
@@ -111,13 +115,15 @@ public:
 				objQuere.insert(tempObj);
 			}
 		}
-		//still error
+		//process all objects
 		for (T tempObj : objQuere) {
 			std::list<stamp_type>& tempList = stampMap.at(tempObj);
 			for (auto it = tempList.begin(); it != tempList.end();) {
+				//stop as soon as possible
 				if (*it > to)break;
 				if (*it >= from) {
 					if (fct(tempObj, *it)) {
+						//delete if necessary
 						helperMap.erase(*it);
 						it = tempList.erase(it);
 					}
@@ -136,7 +142,7 @@ public:
 	}
 
 	stamp_type restart(const T& obj) {
-		assert(stampMap.find(obj) != stampMap.end());
+		assert(containsObject(obj));
 		erase(obj);
 		add(obj);
 		return stampCount - 1;
@@ -184,7 +190,6 @@ void test() {
 
 	// check find object
 	f = 2.55f; s = sfs.add(f); assert(f == sfs.findObject(s));
-	sfs.process(0, sfs.nextStamp(), [](float f, int i) { cout << "(" << f << ", " << i << ") "; return false; }); cout << endl;
 	int N{ 0 };
 	sfs.process(0, 100, [&N](float f, int i) { N++; return false; }); cout << "N: " << N << ", stamps: " << sfs.noOfStamps() << endl; assert(N == sfs.noOfStamps());
 
